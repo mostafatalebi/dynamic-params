@@ -1,7 +1,7 @@
 package tests
 
 import (
-	dyanmic_params "dynamicparams"
+	dyanmic_params "dynamic-params"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
