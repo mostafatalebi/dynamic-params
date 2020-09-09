@@ -1,4 +1,4 @@
-module dynamic-params
+module github.com/mostafatalebi/dynamic-params
 
 go 1.14
 
