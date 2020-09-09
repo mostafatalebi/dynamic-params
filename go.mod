@@ -1,4 +1,4 @@
-module dynamicparams
+module dynamic-params
 
 go 1.14
 
