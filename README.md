@@ -19,7 +19,7 @@ It supports `int`, `string` and `bool` type and more types will be supported soo
 
 **Args**
 
-Or you can add items from argument list, which must be in --name=value format,
+Or you can add items from argument list, which must be in `--name=value` format,
 so if you run you program with `--url=some-url` then you can get it:
 ```go
 p := dyanmic_params.DyanmicParams()
