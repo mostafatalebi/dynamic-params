@@ -7,7 +7,7 @@ import (
 )
 
 func TestDyanmicParams_AddInt(t *testing.T) {
-	p := dyanmic_params.NewCustomParams()
+	p := dyanmic_params.NewDynamicParams()
 	p.Add("sample-int", 55)
 	v, err := p.GetAsInt("sample-int")
 	assert.NoError(t, err)
@@ -15,7 +15,7 @@ func TestDyanmicParams_AddInt(t *testing.T) {
 }
 
 func TestDyanmicParams_AddBool(t *testing.T) {
-	p := dyanmic_params.NewCustomParams()
+	p := dyanmic_params.NewDynamicParams()
 	p.Add("sample-bool", true)
 	v, err := p.GetAsBool("sample-bool")
 	assert.NoError(t, err)

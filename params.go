@@ -13,7 +13,7 @@ type DyanmicParams struct {
 	params dynamicParamCollection
 }
 
-func NewCustomParams() *DyanmicParams {
+func NewDynamicParams() *DyanmicParams {
 	return &DyanmicParams{
 		params: make(dynamicParamCollection, 0),
 	}
