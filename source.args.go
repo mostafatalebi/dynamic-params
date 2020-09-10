@@ -32,7 +32,7 @@ func NewSourceArgs(args interface{}) *SourceArgs {
 func createMapFromArgs(args []string)  argsParamCollection {
 	mc := make(argsParamCollection, 0)
 	if len(args) > 0 {
-		rg := regexp.MustCompile(`^\-\-[a-zA-Z]+\=.+$`)
+		rg := regexp.MustCompile(`^\-\-[a-zA-Z\-]+\=.+$`)
 		for _, v := range args {
 			if m := rg.Match([]byte(v)); m == true{
 				spl := strings.SplitN(v, "=", 2)
