@@ -1,132 +1,91 @@
 package dyanmic_params
 
 
-import (
-	"errors"
-	"strconv"
-	"strings"
-)
 
-type dynamicParamCollection map[string]interface{}
-
-type DyanmicParams struct {
-	params dynamicParamCollection
+type DynamicParams struct {
+	source ParamsSource
 }
 
-func NewDynamicParams() *DyanmicParams {
-	return &DyanmicParams{
-		params: make(dynamicParamCollection, 0),
+// Returns a  new instance of DynamicParams
+//
+// source is the name of the source to use, available sources are:
+// - SrcNameInternal
+// - SrcNameArgs
+//
+// vars... it is a list of extra parameters that a source might need. For example,
+// for SrcNameArgs, you need to pass os.Args (or an array of string you want to treat
+// as list of arguments)
+func NewDynamicParams(source string, vars ...interface{}) *DynamicParams {
+	return &DynamicParams{
+		source: NewSource(source, vars...),
 	}
 }
 
-
-func (c *DyanmicParams) Add(name string, value interface{}) *DyanmicParams {
-	if c.params == nil {
-		c.params = make(dynamicParamCollection, 0)
-	}
-	c.params[name] = value
+// adds a key and value to the active underlying source
+func (c *DynamicParams) Add(name string, value interface{}) *DynamicParams {
+	c.source.Add(name, value)
 	return c
 }
 
-func (c *DyanmicParams) getFromArgs(name string, args []string) string {
-	for _, v := range args {
-		if strings.Contains(v, "--"+name) {
-			spl := strings.Replace(v, "--"+name+"=", "", 1)
-			if len(spl) > 0 {
-				return spl
-			}
-		}
-	}
-	return ""
-}
-
-// must be --key=value format and name must NOT include --
-func (c *DyanmicParams) AddFromArgsAsInt(name string, args []string) *DyanmicParams {
-	argValue := c.getFromArgs(name, args)
-	vl, err := strconv.Atoi(argValue)
-	if err == nil {
-		c.Add(name, vl)
-	}
-	return c
-}
-
-func (c *DyanmicParams) AddFromArgsAsBool(name string, args []string) *DyanmicParams {
-	argValue := c.getFromArgs(name, args)
-	if argValue == "false" || argValue == "0" {
-		c.Add(name, false)
-	} else if argValue == "true" || argValue == "1" {
-		c.Add(name, true)
-	}
-	return c
-}
-
-func (c *DyanmicParams) AddFromArgsAsStr(name string, args []string) *DyanmicParams {
-	argValue := c.getFromArgs(name, args)
-	if argValue != "" {
-		c.Add(name, argValue)
-	}
-	return c
+// returns the raw value, if exists, and if not found, returns nil
+// this function is useful for storing struct and custom compound types
+func (c *DynamicParams) Get(name string) interface{} {
+	return c.source.Get(name)
 }
 
 
-
-
-func (c *DyanmicParams) Get(name string) interface{} {
-	if c.params == nil {
-		return ""
-	} else if val, ok := c.params[name]; ok {
-		return val
-	}
-	return ""
+// Casts the existing value to string and then returns it
+// It tries to convert value of interface{} type to string
+// and if it fails, it returns error
+func (c *DynamicParams) GetAsString(name string) (string, error) {
+	v := c.source.Get(name)
+	return convertToString(v)
 }
 
 
-
-func (c *DyanmicParams) GetAsString(name string) (string, error) {
-	if c.params == nil {
-		return "", errors.New("not fond")
-	} else if val, ok := c.params[name]; ok {
-		if v, ok := val.(string); ok {
-			return v, errors.New("not fond")
-		} else if v, ok := val.(*string); ok {
-			return *v, errors.New("not fond")
-		}
-	}
-	return "", errors.New("not fond")
+func (c *DynamicParams) GetAsInt(name string) (int, error) {
+	v := c.source.Get(name)
+	return convertToInt(v)
 }
 
-func (c *DyanmicParams) GetAsInt(name string) (int, error) {
-	if c.params == nil {
-		return 0, errors.New("not fond")
-	} else if val, ok := c.params[name]; ok {
-		if v, ok := val.(int); ok {
-			return v, nil
-		} else if v, ok := val.(*int); ok {
-			return *v, nil
-		}
-	}
-	return 0, errors.New("not fond")
+func (c *DynamicParams) GetStringAsInt(name string) (int, error) {
+	v := c.source.Get(name)
+	return convertNumericStrToInt(v)
 }
 
-func (c *DyanmicParams) GetAsBool(name string) (bool, error) {
-	if c.params == nil {
-		return false, errors.New("not fond")
-	} else if val, ok := c.params[name]; ok {
-		if v, ok := val.(bool); ok {
-			return v, nil
-		} else if v, ok := val.(*bool); ok {
-			return *v, nil
-		}
-	}
-	return false, errors.New("not fond")
+// if string has these values: 0, 1, true or false,
+// then this method converts them bool type and then returns
+// the value
+func (c *DynamicParams) GetStringAsBool(name string) (bool, error) {
+	v := c.source.Get(name)
+	return convertNumericStrToBool(v)
 }
 
+func (c *DynamicParams) GetAsInt32(name string) (int32, error) {
+	v := c.source.Get(name)
+	return convertToInt32(v)
+}
 
-func (c *DyanmicParams) Has(name string) bool {
-	if c.params == nil {
-		return false
-	} else if _, ok := c.params[name]; ok {
-		return true
-	}
-	return false
+func (c *DynamicParams) GetAsInt64(name string) (int64, error) {
+	v := c.source.Get(name)
+	return convertToInt64(v)
+}
+
+func (c *DynamicParams) GetAsInt8(name string) (int8, error) {
+	v := c.source.Get(name)
+	return convertToInt8(v)
+}
+func (c *DynamicParams) GetAsInt16(name string) (int16, error) {
+	v := c.source.Get(name)
+	return convertToInt16(v)
+}
+
+func (c *DynamicParams) GetAsBool(name string) (bool, error) {
+	v := c.source.Get(name)
+	return convertToBool(v)
+}
+
+// Checks to see if the value exists in the underlying source
+func (c *DynamicParams) Has(name string) bool {
+	return c.source.Has(name)
 }
