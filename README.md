@@ -71,8 +71,8 @@ can get the raw value for compound types (array, struct, map etc.) or if the
 value was scalar, you can use helper methods to get a converted value.
 
 ##### Compound Types
-To deal with other values such as struct or map, you get simply get
-them as interface{} and do the type conversion.
+To deal with other values such as struct or map, you should simply get
+them as interface{} with `Get()` method and do the type conversion.
 
 Examples:
 
