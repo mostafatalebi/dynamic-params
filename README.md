@@ -9,8 +9,8 @@ while allowing you to use different sources of data (now, only internal and args
 2. [Usage](#usage)
     1. [Simple](#simple)
     2. [TypeConversion](#typeconversion)
-    3. [Reading from Args](#readingfromargs)
-    4. [Compound Types](#compoundtypes)
+    3. [Reading from Args](#reading-from-args)
+    4. [Compound Types](#compound-types)
 3. [Development](#development)
     
 #### Import
