@@ -22,11 +22,11 @@ type DynamicParams struct {
 // vars... it is a list of extra parameters that a source might need. For example,
 // for SrcNameArgs, you need to pass os.Args (or an array of string you want to treat
 // as list of arguments)
-func NewDynamicParams(source string, mx bool, vars ...interface{}) *DynamicParams {
-	return createDP(source, mx, vars...)
+func NewDynamicParams(source string, vars ...interface{}) *DynamicParams {
+	return createDP(source, vars...)
 }
 
-func createDP(source string, mx bool, vars ...interface{}) *DynamicParams {
+func createDP(source string, vars ...interface{}) *DynamicParams {
 	return &DynamicParams{
 		Mx: &sync.RWMutex{},
 		source: NewSource(source, vars...),
