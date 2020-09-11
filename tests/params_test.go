@@ -3,7 +3,6 @@ package tests
 import (
 	dp "github.com/mostafatalebi/dynamic-params"
 	"github.com/stretchr/testify/assert"
-	"go/types"
 	"testing"
 )
 
@@ -61,8 +60,6 @@ func TestDynamicParams_Struct(t *testing.T) {
 	p.Add("key", &CustomType{Name: "Robert"})
 	v := p.Get("key")
 	assert.NotNil(t, v)
-	assert.Equal(t, types.Interface{}, v)
-
 	r, ok := v.(*CustomType)
 	assert.True(t, ok)
 	if r != nil {
@@ -70,3 +67,21 @@ func TestDynamicParams_Struct(t *testing.T) {
 	}
 }
 
+
+
+func TestDynamicParams_GetFromArgs_AsQuotedString(t *testing.T) {
+	p := dp.NewDynamicParams(dp.SrcNameArgs, []string{"--key=\"someValue\""})
+	v, err := p.GetAsQuotedString("key")
+	assert.NoError(t, err)
+	assert.Equal(t, "someValue", v)
+
+	p = dp.NewDynamicParams(dp.SrcNameArgs, []string{"--key='someValue'"})
+	v, err = p.GetAsQuotedString("key")
+	assert.NoError(t, err)
+	assert.Equal(t, "someValue", v)
+
+	p = dp.NewDynamicParams(dp.SrcNameArgs, []string{"--key='someValue'"})
+	v, err = p.GetAsString("key")
+	assert.NoError(t, err)
+	assert.Equal(t, "'someValue'", v)
+}

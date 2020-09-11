@@ -1,6 +1,6 @@
 package dyanmic_params
 
-
+import "strings"
 
 type DynamicParams struct {
 	source ParamsSource
@@ -40,6 +40,16 @@ func (c *DynamicParams) Get(name string) interface{} {
 func (c *DynamicParams) GetAsString(name string) (string, error) {
 	v := c.source.Get(name)
 	return convertToString(v)
+}
+
+// this method removes any surrounding quotation marks (only surrounding)
+func (c *DynamicParams) GetAsQuotedString(name string) (string, error) {
+	v := c.source.Get(name)
+	s, err := convertToString(v)
+	if err != nil {
+		return "", err
+	}
+	return strings.Trim(strings.Trim(s, "'"), "\""), nil
 }
 
 

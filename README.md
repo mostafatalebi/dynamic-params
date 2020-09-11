@@ -11,7 +11,8 @@ while allowing you to use different sources of data (now, only internal and args
     2. [TypeConversion](#typeconversion)
     3. [Reading from Args](#reading-from-args)
     4. [Compound Types](#compound-types)
-3. [Development](#development)
+3. [List of Methods](#list-of-methods)
+4. [Development](#development)
     
 #### Import
 ```shell script
@@ -86,14 +87,59 @@ p := dp.NewDynamicParams(dp.SrcNameInternal)
 p.Add("key", &CustomType{Name: "Robert"})
 v := p.Get("key")
 assert.NotNil(t, v)
-assert.Equal(t, types.Interface{}, v)
-
 r, ok := v.(*CustomType)
 assert.True(t, ok)
 if r != nil {
     assert.Equal(t, "Robert", r.Name)
 }
 ```
+
+
+##### List of Methods
+**Add**
+Adds a key and a value. 
+
+**Has**
+Checks to see if a key exists or not.
+
+**Get**
+Returns the raw value passed when using `Add()`
+
+**GetAsString**
+Tries to convert the value to `string` before returning, error if conversion fails.
+
+**GetAsQuotedString**
+Tries to convert the value to `string`, and removes
+ any surrounding single and double quotations 
+ before returning, error if conversion fails.
+
+**GetAsInt**
+Tries to convert the value to `int` before returning, error if conversion fails.
+
+**GetStringAsInt**
+Tries to convert a non-zero starting, numeric string value
+ to `int` before returning, error if conversion fails.
+
+**GetStringAsBool**
+Tries to convert a non-zero starting, numeric string value
+ to `bool` before returning, error if conversion fails.
+
+**GetAsInt32**
+Refer to `GetAsInt()`
+
+**GetAsInt64**
+Refer to `GetAsInt()`
+
+**GetAsInt8**
+Refer to `GetAsInt()`
+
+**GetAsInt16**
+Refer to `GetAsInt()`
+
+**GetAsBool**
+Tries to convert the value to `bool` before returning, error if conversion fails.
+
+
 
 
 ##### Development
