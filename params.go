@@ -1,10 +1,15 @@
 package dyanmic_params
 
-import "strings"
+import (
+	"strings"
+	"sync"
+)
 
 type DynamicParams struct {
+	Mx *sync.RWMutex
 	source ParamsSource
 }
+
 
 // Returns a  new instance of DynamicParams
 //
@@ -12,19 +17,36 @@ type DynamicParams struct {
 // - SrcNameInternal
 // - SrcNameArgs
 //
+// mx if true, does all operations with mutex
+//
 // vars... it is a list of extra parameters that a source might need. For example,
 // for SrcNameArgs, you need to pass os.Args (or an array of string you want to treat
 // as list of arguments)
-func NewDynamicParams(source string, vars ...interface{}) *DynamicParams {
+func NewDynamicParams(source string, mx bool, vars ...interface{}) *DynamicParams {
+	return createDP(source, mx, vars...)
+}
+
+func createDP(source string, mx bool, vars ...interface{}) *DynamicParams {
 	return &DynamicParams{
+		Mx: &sync.RWMutex{},
 		source: NewSource(source, vars...),
 	}
 }
 
+
 // adds a key and value to the active underlying source
 func (c *DynamicParams) Add(name string, value interface{}) *DynamicParams {
+	c.Mx.Lock()
+	defer c.Mx.Unlock()
 	c.source.Add(name, value)
 	return c
+}
+
+// Checks to see if the value exists in the underlying source
+func (c *DynamicParams) Has(name string) bool {
+	c.Mx.Lock()
+	defer c.Mx.Unlock()
+	return c.source.Has(name)
 }
 
 // returns the raw value, if exists, and if not found, returns nil
@@ -95,7 +117,4 @@ func (c *DynamicParams) GetAsBool(name string) (bool, error) {
 	return convertToBool(v)
 }
 
-// Checks to see if the value exists in the underlying source
-func (c *DynamicParams) Has(name string) bool {
-	return c.source.Has(name)
-}
+
