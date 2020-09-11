@@ -49,7 +49,7 @@ Upon creating an instance of `DynamicParams`, set source to
 `SrcNameArgs` and pass your array of arguments (`os.Args`).
 ```go
 p := dp.NewDynamicParams(dp.SrcNameArgs, []string{"--key=123456"})
-v, err := p.GetAsNumericStringAsInt("key")
+v, err := p.GetStringAsInt("key")
 assert.NoError(t, err)
 assert.Equal(t, 123456, v)
 ```
