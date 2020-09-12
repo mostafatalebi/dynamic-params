@@ -55,6 +55,16 @@ func (c *DynamicParams) Get(name string) interface{} {
 	return c.source.Get(name)
 }
 
+func (c *DynamicParams) Scan(regex string) map[string]interface{} {
+	return c.source.Scan(regex)
+}
+func (c *DynamicParams) Count() int64 {
+	return c.source.Count()
+}
+
+func (c *DynamicParams) Iterate(fn func(key string, value interface{})) {
+	c.source.Iterate(fn)
+}
 
 // Casts the existing value to string and then returns it
 // It tries to convert value of interface{} type to string

@@ -58,6 +58,34 @@ func (s *SourceArgs) Get(name string) interface{} {
 	return nil
 }
 
+func (s *SourceArgs) Scan(regex string) map[string]interface{} {
+	if s.Count() > 0 {
+		mp := make(map[string]interface{}, 0)
+		rg, err := regexp.Compile(regex)
+		if err != nil {
+			return nil
+		}
+		for k, v := range s.storage {
+			if rg.MatchString(k) {
+				mp[k] = v
+			}
+		}
+
+		return mp
+	}
+	return nil
+}
+
+func (s *SourceArgs) Iterate(fn func(k string, v interface{})) {
+	if s.Count() > 0 {
+		for k, v := range s.storage {
+			fn(k, v)
+		}
+	}
+	return
+}
+
+
 func (s *SourceArgs) Has(name string) bool {
 	if s.storage == nil {
 		return false
@@ -65,4 +93,12 @@ func (s *SourceArgs) Has(name string) bool {
 		return true
 	}
 	return false
+}
+
+
+func (s *SourceArgs) Count() int64 {
+	if s.storage == nil {
+		return 0
+	}
+	return int64(len(s.storage))
 }

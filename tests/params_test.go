@@ -85,3 +85,50 @@ func TestDynamicParams_GetFromArgs_AsQuotedString(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "'someValue'", v)
 }
+
+func TestDynamicParams_CountSrcArgs_MustAssertTrue(t *testing.T) {
+	p := dp.NewDynamicParams(dp.SrcNameArgs, []string{"--header-content-type='application/json'",
+		"--header-origin='localhost'","--header-content-length='456'"})
+
+	cnt := p.Count()
+	assert.Equal(t, int64(3), cnt)
+}
+
+
+func TestDynamicParams_CountSrcInternal_MustAssertTrue(t *testing.T) {
+	p := dp.NewDynamicParams(dp.SrcNameInternal)
+	p.Add("k1", "v1").Add("k2", "v2").Add("k3", "v3")
+	cnt := p.Count()
+	assert.Equal(t, int64(3), cnt)
+}
+
+func TestDynamicParams_ScanSrcArgs_MustAssertTrue(t *testing.T) {
+	p := dp.NewDynamicParams(dp.SrcNameArgs, []string{"--header-content-type='application/json'",
+		"--header-origin='localhost'","--header-content-length='456'", "--unrelated-content-length='456'"}	)
+
+	cnt := p.Count()
+	assert.Equal(t, int64(4), cnt)
+
+	res := p.Scan(`^header.+$`)
+	assert.NotNil(t, res)
+	assert.Equal(t, 3, len(res))
+
+	res = p.Scan(`^header-content.+$`)
+	assert.NotNil(t, res)
+	assert.Equal(t, 2, len(res))
+}
+func TestDynamicParams_IterateSrcArgs_MustAssertTrue(t *testing.T) {
+	p := dp.NewDynamicParams(dp.SrcNameArgs, []string{"--header-content-type='application/json'",
+		"--header-origin='localhost'","--header-content-length='456'", "--unrelated-content-length='456'"}	)
+
+	cnt := p.Count()
+	assert.Equal(t, int64(4), cnt)
+
+
+	var cntItr int
+	p.Iterate(func(key string, value interface{}) {
+		cntItr++
+	})
+
+	assert.Equal(t, 4, cntItr)
+}
