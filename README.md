@@ -1,8 +1,7 @@
 ## Dynamic Params
 This package allows you to manage your parameters of any type, 
-while allowing you to use different sources of data (now, only internal and args)
-
-
+while allowing you to use different sources of data (now, only internal and args),
+scan them based on a pattern or iterate through them ans apply a callback, 
 
 #### Tables of Contents
 1. [Import](#import)
@@ -104,6 +103,16 @@ Checks to see if a key exists or not.
 
 **Get**
 Returns the raw value passed when using `Add()`
+
+**Count**
+Returns the number of params
+
+**Scan**
+Scans param based on a given regex pattern, and returns the matched collection
+or nil if none
+
+**Iterate**
+Iterates over params and applies the given callback
 
 **GetAsString**
 Tries to convert the value to `string` before returning, error if conversion fails.
