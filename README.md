@@ -125,9 +125,16 @@ Tries to convert the value to `string`, and removes
 **GetAsInt**
 Tries to convert the value to `int` before returning, error if conversion fails.
 
+**GetAsTimeDuration**
+Tries to convert the value to `time.Duration` before returning, error if conversion fails.
+
 **GetStringAsInt**
 Tries to convert a non-zero starting, numeric string value
  to `int` before returning, error if conversion fails.
+ 
+**GetStringAsTimeDuration**
+Tries to convert a duration string (1ms or 2h1m) to
+a time.Duration type using time.ParseDuration() function
 
 **GetStringAsBool**
 Tries to convert a non-zero starting, numeric string value
