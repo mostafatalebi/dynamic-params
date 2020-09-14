@@ -1,6 +1,7 @@
 package dyanmic_params
 
 import (
+	"errors"
 	"strings"
 	"sync"
 	"time"
@@ -11,6 +12,9 @@ type DynamicParams struct {
 	source ParamsSource
 }
 
+const (
+	ErrNotFound = "not found"
+)
 
 // Returns a  new instance of DynamicParams
 //
@@ -72,12 +76,18 @@ func (c *DynamicParams) Iterate(fn func(key string, value interface{})) {
 // and if it fails, it returns error
 func (c *DynamicParams) GetAsString(name string) (string, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return "", errors.New(ErrNotFound)
+	}
 	return convertToString(v)
 }
 
 // this method removes any surrounding quotation marks (only surrounding)
 func (c *DynamicParams) GetAsQuotedString(name string) (string, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return "", errors.New(ErrNotFound)
+	}
 	s, err := convertToString(v)
 	if err != nil {
 		return "", err
@@ -88,25 +98,35 @@ func (c *DynamicParams) GetAsQuotedString(name string) (string, error) {
 
 func (c *DynamicParams) GetAsInt(name string) (int, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return 0, errors.New(ErrNotFound)
+	}
 	return convertToInt(v)
 }
 
 func (c *DynamicParams) GetStringAsInt(name string) (int, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return 0, errors.New(ErrNotFound)
+	}
 	return convertNumericStrToInt(v)
 }
 
 // parses a string using time.ParseDuration() function
 func (c *DynamicParams) GetStringAsTimeDuration(name string) (*time.Duration, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return nil, errors.New(ErrNotFound)
+	}
 	vs, err := convertToString(v)
 	if err != nil {
 		return nil, err
 	}
 	vd, err := time.ParseDuration(vs)
 	if err != nil {
-		return &vd, nil
+		return nil, errors.New(ErrCnvFailed)
 	}
+	return &vd, nil
 }
 
 // if string has these values: 0, 1, true or false,
@@ -114,35 +134,56 @@ func (c *DynamicParams) GetStringAsTimeDuration(name string) (*time.Duration, er
 // the value
 func (c *DynamicParams) GetStringAsBool(name string) (bool, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return false, errors.New(ErrNotFound)
+	}
 	return convertNumericStrToBool(v)
 }
 
 func (c *DynamicParams) GetAsInt32(name string) (int32, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return 0, errors.New(ErrNotFound)
+	}
 	return convertToInt32(v)
 }
 
 func (c *DynamicParams) GetAsInt64(name string) (int64, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return 0, errors.New(ErrNotFound)
+	}
 	return convertToInt64(v)
 }
 
 func (c *DynamicParams) GetAsInt8(name string) (int8, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return 0, errors.New(ErrNotFound)
+	}
 	return convertToInt8(v)
 }
 func (c *DynamicParams) GetAsInt16(name string) (int16, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return 0, errors.New(ErrNotFound)
+	}
 	return convertToInt16(v)
 }
 
-func (c *DynamicParams) GetAsTimeDuration(name string) (time.Duration, error) {
+func (c *DynamicParams) GetAsTimeDuration(name string) (*time.Duration, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return nil, errors.New(ErrNotFound)
+	}
 	return convertToTimeDuration(v)
 }
 
 func (c *DynamicParams) GetAsBool(name string) (bool, error) {
 	v := c.source.Get(name)
+	if v == nil {
+		return false, errors.New(ErrNotFound)
+	}
 	return convertToBool(v)
 }
 

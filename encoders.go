@@ -114,11 +114,11 @@ func convertToInt16(val interface{}) (int16, error) {
 	return 0, errors.New(ErrCnvFailed)
 }
 
-func convertToTimeDuration(val interface{}) (time.Duration, error) {
+func convertToTimeDuration(val interface{}) (*time.Duration, error) {
 	if v, ok := val.(time.Duration); ok {
-		return v, nil
+		return &v, nil
 	} else if v, ok := val.(*time.Duration); ok {
-		return *v, nil
+		return v, nil
 	}
-	return 0, errors.New(ErrCnvFailed)
+	return nil, errors.New(ErrCnvFailed)
 }

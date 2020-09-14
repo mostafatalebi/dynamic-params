@@ -37,6 +37,14 @@ func TestDynamicParams_GetFromArgs_castToBool(t *testing.T) {
 }
 
 
+func TestDynamicParams_GetFromArgs_NotFound(t *testing.T) {
+	p := dp.NewDynamicParams(dp.SrcNameArgs, []string{"--key=true"})
+	_, err := p.GetStringAsBool("keyNotExisting")
+	assert.Error(t, err)
+	assert.Equal(t, dp.ErrNotFound, err.Error())
+}
+
+
 func TestDynamicParams_GetFromArgsNumericAsInt(t *testing.T) {
 	p := dp.NewDynamicParams(dp.SrcNameArgs, []string{"--key=123456"})
 	v, err := p.GetStringAsInt("key")
