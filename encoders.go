@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const ErrCnvFailed = "conversion failed"
@@ -26,6 +27,7 @@ func convertToBytes(val interface{}) ([]byte, error) {
 	}
 	return nil, errors.New(ErrCnvFailed)
 }
+
 func convertToInt(val interface{}) (int, error) {
 	if v, ok := val.(int); ok {
 		return v, nil
@@ -69,6 +71,7 @@ func convertNumericStrToBool(val interface{}) (bool, error) {
 }
 
 
+
 func convertToBool(val interface{}) (bool, error) {
 	if v, ok := val.(bool); ok {
 		return v, nil
@@ -106,6 +109,15 @@ func convertToInt16(val interface{}) (int16, error) {
 	if v, ok := val.(int16); ok {
 		return v, nil
 	} else if v, ok := val.(*int16); ok {
+		return *v, nil
+	}
+	return 0, errors.New(ErrCnvFailed)
+}
+
+func convertToTimeDuration(val interface{}) (time.Duration, error) {
+	if v, ok := val.(time.Duration); ok {
+		return v, nil
+	} else if v, ok := val.(*time.Duration); ok {
 		return *v, nil
 	}
 	return 0, errors.New(ErrCnvFailed)

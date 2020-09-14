@@ -3,6 +3,7 @@ package dyanmic_params
 import (
 	"strings"
 	"sync"
+	"time"
 )
 
 type DynamicParams struct {
@@ -95,6 +96,19 @@ func (c *DynamicParams) GetStringAsInt(name string) (int, error) {
 	return convertNumericStrToInt(v)
 }
 
+// parses a string using time.ParseDuration() function
+func (c *DynamicParams) GetStringAsTimeDuration(name string) (*time.Duration, error) {
+	v := c.source.Get(name)
+	vs, err := convertToString(v)
+	if err != nil {
+		return nil, err
+	}
+	vd, err := time.ParseDuration(vs)
+	if err != nil {
+		return &vd, nil
+	}
+}
+
 // if string has these values: 0, 1, true or false,
 // then this method converts them bool type and then returns
 // the value
@@ -120,6 +134,11 @@ func (c *DynamicParams) GetAsInt8(name string) (int8, error) {
 func (c *DynamicParams) GetAsInt16(name string) (int16, error) {
 	v := c.source.Get(name)
 	return convertToInt16(v)
+}
+
+func (c *DynamicParams) GetAsTimeDuration(name string) (time.Duration, error) {
+	v := c.source.Get(name)
+	return convertToTimeDuration(v)
 }
 
 func (c *DynamicParams) GetAsBool(name string) (bool, error) {
