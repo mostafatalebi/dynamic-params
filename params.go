@@ -72,8 +72,8 @@ func (c *DynamicParams) Add(name string, value interface{}) *DynamicParams {
 // Checks to see if the value exists in the underlying source
 func (c *DynamicParams) Has(name string) bool {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	return c.source.Has(name)
 }
@@ -82,27 +82,30 @@ func (c *DynamicParams) Has(name string) bool {
 // this function is useful for storing struct and custom compound types
 func (c *DynamicParams) Get(name string) interface{} {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	return c.source.Get(name)
 }
 
 func (c *DynamicParams) Scan(regex string) map[string]interface{} {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	return c.source.Scan(regex)
 }
 func (c *DynamicParams) Count() int64 {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	return c.source.Count()
 }
 
+// This function is not concurrent safe
+// If you need to have concurrency and do locking over this usage,
+// you must use your own function for iteration and handle that there.
 func (c *DynamicParams) Iterate(fn func(key string, value interface{})) {
 	c.source.Iterate(fn)
 }
@@ -112,8 +115,8 @@ func (c *DynamicParams) Iterate(fn func(key string, value interface{})) {
 // and if it fails, it returns error
 func (c *DynamicParams) GetAsString(name string) (string, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -125,8 +128,8 @@ func (c *DynamicParams) GetAsString(name string) (string, error) {
 // this method removes any surrounding quotation marks (only surrounding)
 func (c *DynamicParams) GetAsQuotedString(name string) (string, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -142,8 +145,8 @@ func (c *DynamicParams) GetAsQuotedString(name string) (string, error) {
 
 func (c *DynamicParams) GetAsInt(name string) (int, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -154,8 +157,8 @@ func (c *DynamicParams) GetAsInt(name string) (int, error) {
 
 func (c *DynamicParams) GetStringAsInt(name string) (int, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -167,8 +170,8 @@ func (c *DynamicParams) GetStringAsInt(name string) (int, error) {
 // parses a string using time.ParseDuration() function
 func (c *DynamicParams) GetStringAsTimeDuration(name string) (*time.Duration, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -190,8 +193,8 @@ func (c *DynamicParams) GetStringAsTimeDuration(name string) (*time.Duration, er
 // the value
 func (c *DynamicParams) GetStringAsBool(name string) (bool, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -202,8 +205,8 @@ func (c *DynamicParams) GetStringAsBool(name string) (bool, error) {
 
 func (c *DynamicParams) GetAsInt32(name string) (int32, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -214,8 +217,8 @@ func (c *DynamicParams) GetAsInt32(name string) (int32, error) {
 
 func (c *DynamicParams) GetAsInt64(name string) (int64, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -226,8 +229,8 @@ func (c *DynamicParams) GetAsInt64(name string) (int64, error) {
 
 func (c *DynamicParams) GetAsInt8(name string) (int8, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -237,8 +240,8 @@ func (c *DynamicParams) GetAsInt8(name string) (int8, error) {
 }
 func (c *DynamicParams) GetAsInt16(name string) (int16, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -249,8 +252,8 @@ func (c *DynamicParams) GetAsInt16(name string) (int16, error) {
 
 func (c *DynamicParams) GetAsTimeDuration(name string) (*time.Duration, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
@@ -261,8 +264,8 @@ func (c *DynamicParams) GetAsTimeDuration(name string) (*time.Duration, error) {
 
 func (c *DynamicParams) GetAsBool(name string) (bool, error) {
 	if c.Mx != nil {
-		c.Mx.Lock()
-		defer c.Mx.Unlock()
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
 	}
 	v := c.source.Get(name)
 	if v == nil {
