@@ -8,7 +8,7 @@ import (
 
 func TestDynamicParams_AddInt(t *testing.T) {
 	p := dp.NewDynamicParams(dp.SrcNameInternal)
-	p.Add("sample-int", 55)
+	p.Set("sample-int", 55)
 	v, err := p.GetAsInt("sample-int")
 	assert.NoError(t, err)
 	assert.Equal(t, 55, v)
@@ -16,7 +16,7 @@ func TestDynamicParams_AddInt(t *testing.T) {
 
 func TestDynamicParams_AddBool(t *testing.T) {
 	p := dp.NewDynamicParams(dp.SrcNameInternal)
-	p.Add("sample-bool", true)
+	p.Set("sample-bool", true)
 	v, err := p.GetAsBool("sample-bool")
 	assert.NoError(t, err)
 	assert.Equal(t, true, v)
@@ -65,7 +65,7 @@ func TestDynamicParams_Struct(t *testing.T) {
 		Name string
 	}
 	p := dp.NewDynamicParams(dp.SrcNameInternal)
-	p.Add("key", &CustomType{Name: "Robert"})
+	p.Set("key", &CustomType{Name: "Robert"})
 	v := p.Get("key")
 	assert.NotNil(t, v)
 	r, ok := v.(*CustomType)
@@ -105,7 +105,7 @@ func TestDynamicParams_CountSrcArgs_MustAssertTrue(t *testing.T) {
 
 func TestDynamicParams_CountSrcInternal_MustAssertTrue(t *testing.T) {
 	p := dp.NewDynamicParams(dp.SrcNameInternal)
-	p.Add("k1", "v1").Add("k2", "v2").Add("k3", "v3")
+	p.Set("k1", "v1").Set("k2", "v2").Set("k3", "v3")
 	cnt := p.Count()
 	assert.Equal(t, int64(3), cnt)
 }

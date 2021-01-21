@@ -6,10 +6,11 @@ scan them based on a pattern or iterate through them ans apply a callback,
 #### Tables of Contents
 1. [Import](#import)
 2. [Usage](#usage)
-    1. [Simple](#simple)
-    2. [TypeConversion](#typeconversion)
-    3. [Reading from Args](#reading-from-args)
-    4. [Compound Types](#compound-types)
+    1. [Quick Way](#quick-way)
+    2. [Simple](#simple)
+    3. [TypeConversion](#typeconversion)
+    4. [Reading from Args](#reading-from-args)
+    5. [Compound Types](#compound-types)
 3. [List of Methods](#list-of-methods)
 4. [Development](#development)
     
@@ -21,10 +22,27 @@ go get github.com/mostafatalebi/dynamic-params
 #### Usage
 Create an instance, and then add your params:
 
+##### QuickWay
+To quickly accessing values without worrying
+or handling the errors, you can use Q methods.
+Each method found in this doc has a Q method
+corresponding to it. Q methods are good for 
+ignoring errors because they only return
+the value (and in case of error, a zero-value of the type)
+of their name, such as:
+`GetAsString()` Becomes `QGetString()`
+
+To create an instance with quickly, use:
+```go
+dp := dynamic_params.QNewDynamicParams()
+dp.Set("sample-param", 25)
+v := dp.QGetInt("sample-param")
+```
+
 ##### Simple
 ```go
 p := dyanmic_params.DyanmicParams(SrcNameInternal)
-p.Add("sample-int", 55)
+p.Set("sample-int", 55)
 val := p.Get("sample-int")
 ```
 
@@ -35,7 +53,7 @@ of functions, and for your use case, it is `GetAsInt()` func.
 Be careful to check for its errors.
 ```go
 p := dyanmic_params.DyanmicParams(SrcNameInternal)
-p.Add("sample-int", 55)
+p.Set("sample-int", 55)
 val, err := p.GetAsInt("sample-int")
 ```
 
@@ -83,7 +101,7 @@ type CustomType struct {
     Name string
 }
 p := dp.NewDynamicParams(dp.SrcNameInternal)
-p.Add("key", &CustomType{Name: "Robert"})
+p.Set("key", &CustomType{Name: "Robert"})
 v := p.Get("key")
 assert.NotNil(t, v)
 r, ok := v.(*CustomType)
@@ -102,7 +120,7 @@ Adds a key and a value.
 Checks to see if a key exists or not.
 
 **Get**
-Returns the raw value passed when using `Add()`
+Returns the raw value passed when using `Set()`
 
 **Count**
 Returns the number of params

@@ -60,7 +60,7 @@ func createDP(source string, vars ...interface{}) *DynamicParams {
 
 
 // adds a key and value to the active underlying source
-func (c *DynamicParams) Add(name string, value interface{}) *DynamicParams {
+func (c *DynamicParams) Set(name string, value interface{}) *DynamicParams {
 	if c.Mx != nil {
 		c.Mx.Lock()
 		defer c.Mx.Unlock()
@@ -77,6 +77,7 @@ func (c *DynamicParams) Has(name string) bool {
 	}
 	return c.source.Has(name)
 }
+
 
 // returns the raw value, if exists, and if not found, returns nil
 // this function is useful for storing struct and custom compound types
@@ -95,6 +96,7 @@ func (c *DynamicParams) Scan(regex string) map[string]interface{} {
 	}
 	return c.source.Scan(regex)
 }
+
 func (c *DynamicParams) Count() int64 {
 	if c.Mx != nil {
 		c.Mx.RLock()
@@ -123,6 +125,18 @@ func (c *DynamicParams) GetAsString(name string) (string, error) {
 		return "", errors.New(ErrNotFound)
 	}
 	return convertToString(v)
+}
+
+func (c *DynamicParams) GetAsBytes(name string) ([]byte, error) {
+	if c.Mx != nil {
+		c.Mx.RLock()
+		defer c.Mx.RUnlock()
+	}
+	v := c.source.Get(name)
+	if v == nil {
+		return nil, errors.New(ErrNotFound)
+	}
+	return convertToBytes(v)
 }
 
 // this method removes any surrounding quotation marks (only surrounding)
