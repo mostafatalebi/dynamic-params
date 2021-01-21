@@ -17,9 +17,9 @@ func QNewDynamicParams(vars ...interface{}) *DynamicParams {
 		}
 	}
 	if len(vars) > 1 {
-		NewDynamicParams(source, vars[1:]...)
+		return NewDynamicParams(source, vars[1:]...)
 	} else {
-		NewDynamicParams(source)
+		return NewDynamicParams(source)
 	}
 }
 
